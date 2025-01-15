@@ -18,10 +18,10 @@ class TestMinkUNetHead(TestCase):
             import torchsparse
         except ImportError:
             pytest.skip('test requires Torchsparse installation')
-        if torch.cuda.is_available():
+        if torch.musa.is_available():
             minkunet_head = MinkUNetHead(channels=4, num_classes=19)
 
-            minkunet_head.cuda()
+            minkunet_head.musa()
             coordinates, features = [], []
             for i in range(2):
                 c = torch.randint(0, 10, (100, 3)).int()
@@ -29,8 +29,8 @@ class TestMinkUNetHead(TestCase):
                 coordinates.append(c)
                 f = torch.rand(100, 4)
                 features.append(f)
-            features = torch.cat(features, dim=0).cuda()
-            coordinates = torch.cat(coordinates, dim=0).cuda()
+            features = torch.cat(features, dim=0).musa()
+            coordinates = torch.cat(coordinates, dim=0).musa()
             x = torchsparse.SparseTensor(feats=features, coords=coordinates)
 
             # Test forward
@@ -40,7 +40,7 @@ class TestMinkUNetHead(TestCase):
 
             # When truth is non-empty then losses
             # should be nonzero for random inputs
-            voxel_semantic_mask = torch.randint(0, 19, (100, )).long().cuda()
+            voxel_semantic_mask = torch.randint(0, 19, (100, )).long().musa()
             gt_pts_seg = PointData(voxel_semantic_mask=voxel_semantic_mask)
 
             datasample = Det3DDataSample()

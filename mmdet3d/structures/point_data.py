@@ -7,8 +7,8 @@ import torch
 from mmengine.structures import BaseDataElement
 
 IndexType = Union[str, slice, int, list, torch.LongTensor,
-                  torch.cuda.LongTensor, torch.BoolTensor,
-                  torch.cuda.BoolTensor, np.ndarray]
+                  torch.musa.LongTensor, torch.BoolTensor,
+                  torch.musa.BoolTensor, np.ndarray]
 
 
 class PointData(BaseDataElement):
@@ -86,8 +86,8 @@ class PointData(BaseDataElement):
             item = item.astype(np.int64) if item.dtype == np.int32 else item
             item = torch.from_numpy(item)
         assert isinstance(
-            item, (str, slice, int, torch.LongTensor, torch.cuda.LongTensor,
-                   torch.BoolTensor, torch.cuda.BoolTensor))
+            item, (str, slice, int, torch.LongTensor, torch.musa.LongTensor,
+                   torch.BoolTensor, torch.musa.BoolTensor))
 
         if isinstance(item, str):
             return getattr(self, item)
@@ -103,7 +103,7 @@ class PointData(BaseDataElement):
         if isinstance(item, torch.Tensor):
             assert item.dim() == 1, 'Only support to get the' \
                                     ' values along the first dimension.'
-            if isinstance(item, (torch.BoolTensor, torch.cuda.BoolTensor)):
+            if isinstance(item, (torch.BoolTensor, torch.musa.BoolTensor)):
                 assert len(item) == len(self), 'The shape of the ' \
                                                'input(BoolTensor) ' \
                                                f'{len(item)} ' \
@@ -123,7 +123,7 @@ class PointData(BaseDataElement):
                                                    and hasattr(v, 'cat')):
                     # convert to indexes from BoolTensor
                     if isinstance(item,
-                                  (torch.BoolTensor, torch.cuda.BoolTensor)):
+                                  (torch.BoolTensor, torch.musa.BoolTensor)):
                         indexes = torch.nonzero(item).view(
                             -1).cpu().numpy().tolist()
                     else:

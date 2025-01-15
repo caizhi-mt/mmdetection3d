@@ -11,7 +11,7 @@ def test_dla_neck():
     in_channels = [16, 32, 64, 128, 256, 512]
     feat_sizes = [s // 2**i for i in range(6)]  # [32, 16, 8, 4, 2, 1]
 
-    if torch.cuda.is_available():
+    if torch.musa.is_available():
         # Test DLA Neck with DCNv2 on GPU
         neck_cfg = dict(
             type='DLANeck',
@@ -21,9 +21,9 @@ def test_dla_neck():
             norm_cfg=dict(type='GN', num_groups=32))
         neck = MODELS.build(neck_cfg)
         neck.init_weights()
-        neck.cuda()
+        neck.musa()
         feats = [
-            torch.rand(4, in_channels[i], feat_sizes[i], feat_sizes[i]).cuda()
+            torch.rand(4, in_channels[i], feat_sizes[i], feat_sizes[i]).musa()
             for i in range(len(in_channels))
         ]
         outputs = neck(feats)

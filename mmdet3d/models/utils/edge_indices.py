@@ -14,9 +14,9 @@ def get_edge_indices(img_metas: List[dict],
                      device: str = 'cpu') -> List[Tensor]:
     """Function to filter the objects label outside the image.
     The edge_indices are generated using numpy on cpu rather
-    than on CUDA due to the latency issue. When batch size = 8,
+    than on MUSA due to the latency issue. When batch size = 8,
     this function with numpy array is ~8 times faster than that
-    with CUDA tensor (0.09s and 0.72s in 100 runs).
+    with MUSA tensor (0.09s and 0.72s in 100 runs).
 
     Args:
         img_metas (List[dict]): Meta information of each image, e.g.,

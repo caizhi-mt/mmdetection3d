@@ -5,7 +5,7 @@ from mmdet3d.registry import MODELS
 
 
 def test_pointnet2_fp_neck():
-    if not torch.cuda.is_available():
+    if not torch.musa.is_available():
         pytest.skip()
 
     xyzs = [16384, 4096, 1024, 256, 64]
@@ -25,10 +25,10 @@ def test_pointnet2_fp_neck():
     neck = MODELS.build(neck_cfg)
     neck.init_weights()
 
-    if torch.cuda.is_available():
-        sa_xyz = [x.cuda() for x in sa_xyz]
-        sa_features = [x.cuda() for x in sa_features]
-        neck.cuda()
+    if torch.musa.is_available():
+        sa_xyz = [x.musa() for x in sa_xyz]
+        sa_features = [x.musa() for x in sa_features]
+        neck.musa()
 
     feats_sa = {'sa_xyz': sa_xyz, 'sa_features': sa_features}
     outputs = neck(feats_sa)

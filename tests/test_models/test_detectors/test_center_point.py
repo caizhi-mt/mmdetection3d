@@ -32,14 +32,14 @@ class TestCenterPoint(unittest.TestCase):
             det_sample.gt_instances_3d.bboxes_3d = bbox_3d_class(
                 torch.rand(num_instances, 9), box_dim=9)
 
-        if torch.cuda.is_available():
+        if torch.musa.is_available():
 
-            model = model.cuda()
+            model = model.musa()
             # test simple_test
 
             data = model.data_preprocessor(packed_inputs, True)
             with torch.no_grad():
-                torch.cuda.empty_cache()
+                torch.musa.empty_cache()
                 losses = model.forward(**data, mode='loss')
             assert losses['task0.loss_heatmap'] >= 0
             assert losses['task0.loss_bbox'] >= 0

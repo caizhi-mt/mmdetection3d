@@ -30,9 +30,9 @@ class MMdet3dHandler(BaseHandler):
                 pertaining to the model artifacts parameters.
         """
         properties = context.system_properties
-        self.map_location = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self.map_location = 'musa' if torch.musa.is_available() else 'cpu'
         self.device = torch.device(self.map_location + ':' +
-                                   str(properties.get('gpu_id')) if torch.cuda.
+                                   str(properties.get('gpu_id')) if torch.musa.
                                    is_available() else self.map_location)
         self.manifest = context.manifest
 

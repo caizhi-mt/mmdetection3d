@@ -19,7 +19,7 @@ class TestFreeAnchor(unittest.TestCase):
         freeanchor_cfg = get_detector_cfg(
             'free_anchor/pointpillars_hv_regnet-1.6gf_fpn_head-free-anchor'
             '_sbn-all_8xb4-2x_nus-3d.py')
-        # decrease channels to reduce cuda memory.
+        # decrease channels to reduce musa memory.
         freeanchor_cfg.pts_voxel_encoder.feat_channels = [1, 1]
         freeanchor_cfg.pts_middle_encoder.in_channels = 1
         freeanchor_cfg.pts_backbone.base_channels = 1
@@ -49,12 +49,12 @@ class TestFreeAnchor(unittest.TestCase):
         # for item in aug_data:
         #     item['data_sample'].set_metainfo(metainfo)
 
-        if torch.cuda.is_available():
-            model = model.cuda()
+        if torch.musa.is_available():
+            model = model.musa()
             # test simple_test
             with torch.no_grad():
                 data = model.data_preprocessor(packed_inputs, True)
-                torch.cuda.empty_cache()
+                torch.musa.empty_cache()
                 results = model.forward(**data, mode='predict')
             self.assertEqual(len(results), 1)
             self.assertIn('bboxes_3d', results[0].pred_instances_3d)

@@ -26,8 +26,8 @@ class TestH3D(unittest.TestCase):
             with_pts_semantic_mask=True,
             with_pts_instance_mask=True)
 
-        if torch.cuda.is_available():
-            model = model.cuda()
+        if torch.musa.is_available():
+            model = model.musa()
             # test simple_test
             with torch.no_grad():
                 data = model.data_preprocessor(packed_inputs, True)

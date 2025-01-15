@@ -27,12 +27,12 @@ class TestCylinder3D(unittest.TestCase):
             num_classes=1,
             with_pts_semantic_mask=True)
 
-        if torch.cuda.is_available():
-            model = model.cuda()
+        if torch.musa.is_available():
+            model = model.musa()
             # test simple_test
             with torch.no_grad():
                 data = model.data_preprocessor(packed_inputs, True)
-                torch.cuda.empty_cache()
+                torch.musa.empty_cache()
                 results = model.forward(**data, mode='predict')
             self.assertEqual(len(results), 1)
             self.assertIn('pts_semantic_mask', results[0].pred_pts_seg)

@@ -2,8 +2,12 @@ import os
 from setuptools import setup
 
 import torch
-from torch.utils.cpp_extension import (BuildExtension, CppExtension,
-                                       CUDAExtension)
+import torch_musa
+if os.getenv('FORCE_MUSA', '0') == '1':
+    from torch_musa.utils.musa_extension import BuildExtension
+else:
+    from torch.utils.cpp_extension import BuildExtension
+    from torch.utils.cpp_extension import CppExtension, CUDAExtension
 
 
 def make_cuda_ext(name,
@@ -19,7 +23,7 @@ def make_cuda_ext(name,
     if torch.cuda.is_available() or os.getenv('FORCE_CUDA', '0') == '1':
         define_macros += [('WITH_CUDA', None)]
         extension = CUDAExtension
-        extra_compile_args['nvcc'] = extra_args + [
+        extra_compile_args['mcc'] = extra_args + [
             '-D__CUDA_NO_HALF_OPERATORS__',
             '-D__CUDA_NO_HALF_CONVERSIONS__',
             '-D__CUDA_NO_HALF2_OPERATORS__',
@@ -29,6 +33,26 @@ def make_cuda_ext(name,
             '-gencode=arch=compute_86,code=sm_86',
         ]
         sources += sources_cuda
+    elif os.getenv('FORCE_MUSA', '0') == '1':
+        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        from torch_musa.utils.musa_extension import MUSAExtension
+        sources += sources_cuda
+        sources = [s.replace('src', 'src_musa') for s in sources]
+        sources_new = []
+        for source in sources:
+            if source.endswith('.cu'):
+                source_new = source.split('.')[0] + '.mu'
+            else:
+                source_new = source
+            sources_new.append(source_new)
+        sources = sources_new
+        extra_include_path = [s.replace('include', 'include_musa') for s in extra_include_path]
+
+        from torch_musa.testing import get_musa_arch
+        define_macros += [('MMCV_WITH_MUSA', None),
+                            ('MUSA_ARCH', str(get_musa_arch()))]
+        os.environ['MUSA_ARCH'] = str(get_musa_arch())
+        extension = MUSAExtension
     else:
         print('Compiling {} without CUDA'.format(name))
         extension = CppExtension

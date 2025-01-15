@@ -7,8 +7,8 @@ from mmdet3d.registry import MODELS
 
 
 def test_hard_simple_VFE():
-    if not torch.cuda.is_available():
-        pytest.skip('test requires GPU and torch+cuda')
+    if not torch.musa.is_available():
+        pytest.skip('test requires GPU and torch+musa')
     hard_simple_VFE_cfg = dict(type='HardSimpleVFE', num_features=5)
     hard_simple_VFE = MODELS.build(hard_simple_VFE_cfg)
     features = torch.rand([240000, 10, 5])
@@ -19,8 +19,8 @@ def test_hard_simple_VFE():
 
 
 def test_seg_VFE():
-    if not torch.cuda.is_available():
-        pytest.skip('test requires GPU and torch+cuda')
+    if not torch.musa.is_available():
+        pytest.skip('test requires GPU and torch+musa')
     seg_VFE_cfg = dict(
         type='SegVFE',
         feat_channels=[64, 128, 256, 256],
@@ -29,14 +29,14 @@ def test_seg_VFE():
         feat_compression=16,
         return_point_feats=True)
     seg_VFE = MODELS.build(seg_VFE_cfg)
-    seg_VFE = seg_VFE.cuda()
-    features = torch.rand([240000, 6]).cuda()
+    seg_VFE = seg_VFE.musa()
+    features = torch.rand([240000, 6]).musa()
     coors = []
     for i in range(4):
         coor = torch.randint(0, 10, (60000, 3))
         coor = F.pad(coor, (1, 0), mode='constant', value=i)
         coors.append(coor)
-    coors = torch.cat(coors, dim=0).cuda()
+    coors = torch.cat(coors, dim=0).musa()
     out_features, out_coors, out_point_features = seg_VFE(features, coors)
     assert out_features.shape[0] == out_coors.shape[0]
     assert len(out_point_features) == 4

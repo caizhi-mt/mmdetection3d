@@ -98,8 +98,8 @@ class TestDet3DDataPreprocessor(TestCase):
             self.assertEqual(data_sample.pad_shape, expected_shape)
 
         # test cylindrical voxelization
-        if not torch.cuda.is_available():
-            pytest.skip('test requires GPU and CUDA')
+        if not torch.musa.is_available():
+            pytest.skip('test requires GPU and MUSA')
         point_cloud_range = [0, -180, -4, 50, 180, 2]
         grid_shape = [480, 360, 32]
         voxel_layer = dict(
@@ -109,7 +109,7 @@ class TestDet3DDataPreprocessor(TestCase):
             max_voxels=-1)
         processor = Det3DDataPreprocessor(
             voxel=True, voxel_type='cylindrical',
-            voxel_layer=voxel_layer).cuda()
+            voxel_layer=voxel_layer).musa()
         num_points = 5000
         xy = torch.rand(num_points, 2) * 140 - 70
         z = torch.rand(num_points, 1) * 9 - 6

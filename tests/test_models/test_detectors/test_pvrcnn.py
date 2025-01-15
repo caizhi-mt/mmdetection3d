@@ -38,12 +38,12 @@ class TestPVRCNN(unittest.TestCase):
         #     for batch_id in len(item['data_samples']):
         #         item['data_samples'][batch_id].set_metainfo(metainfo)
 
-        if torch.cuda.is_available():
-            model = model.cuda()
+        if torch.musa.is_available():
+            model = model.musa()
             # test simple_test
             with torch.no_grad():
                 data = model.data_preprocessor(packed_inputs, True)
-                torch.cuda.empty_cache()
+                torch.musa.empty_cache()
                 results = model.forward(**data, mode='predict')
             self.assertEqual(len(results), 1)
             self.assertIn('bboxes_3d', results[0].pred_instances_3d)
@@ -53,7 +53,7 @@ class TestPVRCNN(unittest.TestCase):
             # save the memory
             with torch.no_grad():
                 losses = model.forward(**data, mode='loss')
-                torch.cuda.empty_cache()
+                torch.musa.empty_cache()
             self.assertGreater(losses['loss_rpn_cls'][0], 0)
             self.assertGreaterEqual(losses['loss_rpn_bbox'][0], 0)
             self.assertGreaterEqual(losses['loss_rpn_dir'][0], 0)

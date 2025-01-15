@@ -30,11 +30,11 @@ class TestFCAF3d(unittest.TestCase):
             points_feat_dim=6,
             gt_bboxes_dim=6)
 
-        if torch.cuda.is_available():
-            model = model.cuda()
+        if torch.musa.is_available():
+            model = model.musa()
             with torch.no_grad():
                 data = model.data_preprocessor(packed_inputs, False)
-                torch.cuda.empty_cache()
+                torch.musa.empty_cache()
                 results = model.forward(**data, mode='predict')
             self.assertEqual(len(results), 1)
             self.assertIn('bboxes_3d', results[0].pred_instances_3d)

@@ -13,8 +13,8 @@ class TestCylinder3DHead(TestCase):
 
     def test_cylinder3d_head_loss(self):
         """Tests Cylinder3D head loss."""
-        if not torch.cuda.is_available():
-            pytest.skip('test requires GPU and torch+cuda')
+        if not torch.musa.is_available():
+            pytest.skip('test requires GPU and torch+musa')
         cylinder3d_head = Cylinder3DHead(
             channels=128,
             num_classes=20,
@@ -25,13 +25,13 @@ class TestCylinder3DHead(TestCase):
                 loss_weight=1.0),
             loss_lovasz=dict(
                 type='LovaszLoss', loss_weight=1.0, reduction='none'),
-        ).cuda()
+        ).musa()
 
-        voxel_feats = torch.rand(50, 128).cuda()
-        coorx = torch.randint(0, 480, (50, 1)).int().cuda()
-        coory = torch.randint(0, 360, (50, 1)).int().cuda()
-        coorz = torch.randint(0, 32, (50, 1)).int().cuda()
-        coorbatch0 = torch.zeros(50, 1).int().cuda()
+        voxel_feats = torch.rand(50, 128).musa()
+        coorx = torch.randint(0, 480, (50, 1)).int().musa()
+        coory = torch.randint(0, 360, (50, 1)).int().musa()
+        coorz = torch.randint(0, 32, (50, 1)).int().musa()
+        coorbatch0 = torch.zeros(50, 1).int().musa()
         coors = torch.cat([coorbatch0, coorx, coory, coorz], dim=1)
         grid_size = [480, 360, 32]
         batch_size = 1
@@ -45,7 +45,7 @@ class TestCylinder3DHead(TestCase):
 
         # When truth is non-empty then losses
         # should be nonzero for random inputs
-        voxel_semantic_mask = torch.randint(0, 20, (50, )).long().cuda()
+        voxel_semantic_mask = torch.randint(0, 20, (50, )).long().musa()
         gt_pts_seg = PointData(voxel_semantic_mask=voxel_semantic_mask)
 
         datasample = Det3DDataSample()
@@ -60,7 +60,7 @@ class TestCylinder3DHead(TestCase):
         self.assertGreater(loss_lovasz, 0, 'lovasz loss should be positive')
 
         batch_inputs_dict = dict(voxels=dict(voxel_coors=coors))
-        datasample.point2voxel_map = torch.randint(0, 50, (100, )).int().cuda()
+        datasample.point2voxel_map = torch.randint(0, 50, (100, )).int().musa()
         point_logits = cylinder3d_head.predict(sparse_voxels,
                                                batch_inputs_dict, [datasample])
         assert point_logits[0].shape == torch.Size([100, 20])

@@ -221,7 +221,7 @@ class Anchor3DHead(Base3DDenseHead, AnchorTrainMixin):
     def get_anchors(self,
                     featmap_sizes: List[tuple],
                     input_metas: List[dict],
-                    device: str = 'cuda') -> list:
+                    device: str = 'musa') -> list:
         """Get anchors according to feature map sizes.
 
         Args:

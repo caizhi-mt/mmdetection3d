@@ -23,12 +23,12 @@ class TestPointRCNN(unittest.TestCase):
         packed_inputs = create_detector_inputs(
             num_points=10101, num_gt_instance=num_gt_instance)
 
-        if torch.cuda.is_available():
-            model = model.cuda()
+        if torch.musa.is_available():
+            model = model.musa()
             # test simple_test
             with torch.no_grad():
                 data = model.data_preprocessor(packed_inputs, True)
-                torch.cuda.empty_cache()
+                torch.musa.empty_cache()
                 results = model.forward(**data, mode='predict')
             self.assertEqual(len(results), 1)
             self.assertIn('bboxes_3d', results[0].pred_instances_3d)
@@ -38,7 +38,7 @@ class TestPointRCNN(unittest.TestCase):
             # save the memory
             with torch.no_grad():
                 losses = model.forward(**data, mode='loss')
-                torch.cuda.empty_cache()
+                torch.musa.empty_cache()
             self.assertGreaterEqual(losses['rpn_bbox_loss'], 0)
             self.assertGreaterEqual(losses['rpn_semantic_loss'], 0)
             self.assertGreaterEqual(losses['loss_cls'], 0)

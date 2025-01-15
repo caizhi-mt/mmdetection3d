@@ -36,7 +36,7 @@ class TestLiDARSeg3DInferencer(TestCase):
                             pred2['pts_semantic_mask']))
 
     @pytest.mark.skipif(
-        not torch.cuda.is_available(), reason='requires CUDA support')
+        not torch.musa.is_available(), reason='requires MUSA support')
     @pytest.mark.skipif(
         'DISPLAY' not in os.environ, reason='requires DISPLAY device')
     def test_call(self):
@@ -84,7 +84,7 @@ class TestLiDARSeg3DInferencer(TestCase):
         self.assertIn('predictions', res_bs2)
 
     @pytest.mark.skipif(
-        not torch.cuda.is_available(), reason='requires CUDA support')
+        not torch.musa.is_available(), reason='requires MUSA support')
     @pytest.mark.skipif(
         'DISPLAY' not in os.environ, reason='requires DISPLAY device')
     def test_visualizer(self):
@@ -94,7 +94,7 @@ class TestLiDARSeg3DInferencer(TestCase):
             self.inferencer(inputs, out_dir=tmp_dir)
 
     def test_post_processor(self):
-        if not torch.cuda.is_available():
+        if not torch.musa.is_available():
             return
         # return_datasample
         inputs = dict(points='tests/data/s3dis/points/Area_1_office_2.bin')

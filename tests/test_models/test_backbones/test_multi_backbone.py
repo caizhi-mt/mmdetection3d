@@ -7,7 +7,7 @@ from mmdet3d.registry import MODELS
 
 
 def test_multi_backbone():
-    if not torch.cuda.is_available():
+    if not torch.musa.is_available():
         pytest.skip()
 
     # test list config
@@ -59,12 +59,12 @@ def test_multi_backbone():
         ])
 
     self = MODELS.build(cfg_list)
-    self.cuda()
+    self.musa()
 
     assert len(self.backbone_list) == 4
 
     xyz = np.fromfile('tests/data/sunrgbd/points/000001.bin', dtype=np.float32)
-    xyz = torch.from_numpy(xyz).view(1, -1, 6).cuda()  # (B, N, 6)
+    xyz = torch.from_numpy(xyz).view(1, -1, 6).musa()  # (B, N, 6)
     # test forward
     ret_dict = self(xyz[:, :, :4])
 
@@ -90,7 +90,7 @@ def test_multi_backbone():
             norm_cfg=dict(type='BN2d')))
 
     self = MODELS.build(cfg_dict)
-    self.cuda()
+    self.musa()
 
     assert len(self.backbone_list) == 2
 

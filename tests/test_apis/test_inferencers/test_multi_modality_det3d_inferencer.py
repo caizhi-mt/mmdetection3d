@@ -42,7 +42,7 @@ class TestMultiModalityDet3DInferencer(TestCase):
                     np.allclose(pred1['labels_3d'], pred2['labels_3d']))
 
     def test_call(self):
-        if not torch.cuda.is_available():
+        if not torch.musa.is_available():
             return
         infos_path = 'demo/data/kitti/000008.pkl'
         points_path = 'demo/data/kitti/000008.bin'
@@ -86,7 +86,7 @@ class TestMultiModalityDet3DInferencer(TestCase):
         self.assertIn('visualization', res_ndarray)
 
     def test_visualize(self):
-        if not torch.cuda.is_available():
+        if not torch.musa.is_available():
             return
         inputs = dict(
             points='demo/data/kitti/000008.bin',
@@ -100,7 +100,7 @@ class TestMultiModalityDet3DInferencer(TestCase):
             # self.assertTrue(osp.exists(osp.join(tmp_dir, '000000.png')))
 
     def test_postprocess(self):
-        if not torch.cuda.is_available():
+        if not torch.musa.is_available():
             return
         # return_datasample
         infos_path = 'demo/data/kitti/000008.pkl'

@@ -187,7 +187,7 @@ class TestAnchor3DHead(TestCase):
             'box_mode_3d': Box3DMode.LIDAR
         }]
         # test get_boxes
-        cls_scores[0] -= 1.5  # too many positive samples may cause cuda oom
+        cls_scores[0] -= 1.5  # too many positive samples may cause musa oom
         results = anchor3d_head.predict_by_feat(cls_scores, bbox_preds,
                                                 dir_cls_preds, input_metas)
         pred_instances = results[0]

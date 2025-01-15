@@ -20,14 +20,14 @@ def set_random_seed(seed, deterministic=False):
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
+    torch.musa.manual_seed_all(seed)
     if deterministic:
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
 
 
 def test_paconv_regularization_loss():
-    from mmdet3d.models.layers import PAConv, PAConvCUDA
+    from mmdet3d.models.layers import PAConv, PAConvMUSA
     from mmdet3d.models.losses import PAConvRegularizationLoss
 
     class ToyModel(nn.Module):
@@ -38,7 +38,7 @@ def test_paconv_regularization_loss():
             self.paconvs = nn.ModuleList()
             self.paconvs.append(PAConv(8, 16, 8))
             self.paconvs.append(PAConv(8, 16, 8, kernel_input='identity'))
-            self.paconvs.append(PAConvCUDA(8, 16, 8))
+            self.paconvs.append(PAConvMUSA(8, 16, 8))
 
             self.conv1 = nn.Conv1d(3, 8, 1)
 

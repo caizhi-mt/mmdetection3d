@@ -49,8 +49,8 @@ def _init_multi_modal_evaluate_input():
 
 
 def test_multi_modal_kitti_metric():
-    if not torch.cuda.is_available():
-        pytest.skip('test requires GPU and torch+cuda')
+    if not torch.musa.is_available():
+        pytest.skip('test requires GPU and torch+musa')
     kittimetric = KittiMetric(
         data_root + '/kitti_infos_train.pkl', metric=['mAP'])
     kittimetric.dataset_meta = dict(classes=['Pedestrian', 'Cyclist', 'Car'])
@@ -72,8 +72,8 @@ def test_multi_modal_kitti_metric():
 
 
 def test_kitti_metric_mAP():
-    if not torch.cuda.is_available():
-        pytest.skip('test requires GPU and torch+cuda')
+    if not torch.musa.is_available():
+        pytest.skip('test requires GPU and torch+musa')
     kittimetric = KittiMetric(
         data_root + '/kitti_infos_train.pkl', metric=['mAP'])
     kittimetric.dataset_meta = dict(classes=['Pedestrian', 'Cyclist', 'Car'])

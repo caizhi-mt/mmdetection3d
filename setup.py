@@ -27,29 +27,29 @@ def get_version():
     return locals()['__version__']
 
 
-def make_cuda_ext(name,
+def make_musa_ext(name,
                   module,
                   sources,
-                  sources_cuda=[],
+                  sources_musa=[],
                   extra_args=[],
                   extra_include_path=[]):
 
     define_macros = []
     extra_compile_args = {'cxx': [] + extra_args}
 
-    if torch.cuda.is_available() or os.getenv('FORCE_CUDA', '0') == '1':
-        define_macros += [('WITH_CUDA', None)]
-        extension = CUDAExtension
-        extra_compile_args['nvcc'] = extra_args + [
-            '-D__CUDA_NO_HALF_OPERATORS__',
-            '-D__CUDA_NO_HALF_CONVERSIONS__',
-            '-D__CUDA_NO_HALF2_OPERATORS__',
+    if torch.musa.is_available() or os.getenv('FORCE_MUSA', '0') == '1':
+        define_macros += [('WITH_MUSA', None)]
+        extension = MUSAExtension
+        extra_compile_args['mcc'] = extra_args + [
+            '-D__MUSA_NO_HALF_OPERATORS__',
+            '-D__MUSA_NO_HALF_CONVERSIONS__',
+            '-D__MUSA_NO_HALF2_OPERATORS__',
         ]
-        sources += sources_cuda
+        sources += sources_musa
     else:
-        print('Compiling {} without CUDA'.format(name))
+        print('Compiling {} without MUSA'.format(name))
         extension = CppExtension
-        # raise EnvironmentError('CUDA is required to compile MMDetection!')
+        # raise EnvironmentError('MUSA is required to compile MMDetection!')
 
     return extension(
         name='{}.{}'.format(module, name),

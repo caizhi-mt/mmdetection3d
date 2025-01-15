@@ -7,7 +7,7 @@ from torch import Tensor
 from torch import nn as nn
 
 from mmdet3d.registry import MODELS
-from ..layers import PAConv, PAConvCUDA
+from ..layers import PAConv, PAConvMUSA
 
 
 def weight_correlation(conv: nn.Module) -> Tensor:
@@ -16,12 +16,12 @@ def weight_correlation(conv: nn.Module) -> Tensor:
 
     Args:
         conv (nn.Module): A Conv modules to be regularized.
-            Currently we only support `PAConv` and `PAConvCUDA`.
+            Currently we only support `PAConv` and `PAConvMUSA`.
 
     Returns:
         Tensor: Correlations between each kernel weights in weight bank.
     """
-    assert isinstance(conv, (PAConv, PAConvCUDA)), \
+    assert isinstance(conv, (PAConv, PAConvMUSA)), \
         f'unsupported module type {type(conv)}'
     kernels = conv.weight_bank  # [C_in, num_kernels * C_out]
     in_channels = conv.in_channels
@@ -62,7 +62,7 @@ def paconv_regularization_loss(modules: List[nn.Module],
     """
     corr_loss = []
     for module in modules:
-        if isinstance(module, (PAConv, PAConvCUDA)):
+        if isinstance(module, (PAConv, PAConvMUSA)):
             corr_loss.append(weight_correlation(module))
     corr_loss = torch.stack(corr_loss)
 

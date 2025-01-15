@@ -13,8 +13,8 @@ class TestFCAF3DHead(TestCase):
 
     def test_fcaf3d_head_loss(self):
         """Test fcaf3d head loss when truth is empty and non-empty."""
-        if not torch.cuda.is_available():
-            pytest.skip('test requires GPU and torch+cuda')
+        if not torch.musa.is_available():
+            pytest.skip('test requires GPU and torch+musa')
 
         try:
             import MinkowskiEngine as ME
@@ -36,24 +36,24 @@ class TestFCAF3DHead(TestCase):
             bbox_loss=dict(type='AxisAlignedIoULoss'),
             cls_loss=dict(type='mmdet.FocalLoss'),
         )
-        fcaf3d_head = fcaf3d_head.cuda()
+        fcaf3d_head = fcaf3d_head.musa()
 
         # fake input of head
-        coordinates, features = [torch.randn(500, 3).cuda() * 100
-                                 ], [torch.randn(500, 3).cuda()]
+        coordinates, features = [torch.randn(500, 3).musa() * 100
+                                 ], [torch.randn(500, 3).musa()]
         tensor_coordinates, tensor_features = ME.utils.sparse_collate(
             coordinates, features)
         x = ME.SparseTensor(
             features=tensor_features, coordinates=tensor_coordinates)
         # backbone
         conv1 = ME.MinkowskiConvolution(
-            3, 64, kernel_size=3, stride=2, dimension=3).cuda()
+            3, 64, kernel_size=3, stride=2, dimension=3).musa()
         conv2 = ME.MinkowskiConvolution(
-            64, 128, kernel_size=3, stride=2, dimension=3).cuda()
+            64, 128, kernel_size=3, stride=2, dimension=3).musa()
         conv3 = ME.MinkowskiConvolution(
-            128, 256, kernel_size=3, stride=2, dimension=3).cuda()
+            128, 256, kernel_size=3, stride=2, dimension=3).musa()
         conv4 = ME.MinkowskiConvolution(
-            256, 512, kernel_size=3, stride=2, dimension=3).cuda()
+            256, 512, kernel_size=3, stride=2, dimension=3).musa()
 
         # backbone outputs of 4 levels
         x1 = conv1(x)
@@ -71,7 +71,7 @@ class TestFCAF3DHead(TestCase):
             points_feat_dim=6,
             gt_bboxes_dim=6)
         data_samples = [
-            sample.cuda() for sample in packed_inputs['data_samples']
+            sample.musa() for sample in packed_inputs['data_samples']
         ]
 
         gt_losses = fcaf3d_head.loss(x, data_samples)

@@ -7,8 +7,8 @@ from mmdet3d.registry import MODELS
 
 
 def test_minkunet_backbone():
-    if not torch.cuda.is_available():
-        pytest.skip('test requires GPU and torch+cuda')
+    if not torch.musa.is_available():
+        pytest.skip('test requires GPU and torch+musa')
 
     try:
         import torchsparse  # noqa: F401
@@ -22,11 +22,11 @@ def test_minkunet_backbone():
         coordinates.append(c)
         f = torch.rand(100, 4)
         features.append(f)
-    features = torch.cat(features, dim=0).cuda()
-    coordinates = torch.cat(coordinates, dim=0).cuda()
+    features = torch.cat(features, dim=0).musa()
+    coordinates = torch.cat(coordinates, dim=0).musa()
 
     cfg = dict(type='MinkUNetBackbone')
-    self = MODELS.build(cfg).cuda()
+    self = MODELS.build(cfg).musa()
     self.init_weights()
 
     y = self(features, coordinates)

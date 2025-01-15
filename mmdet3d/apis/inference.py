@@ -37,7 +37,7 @@ def convert_SyncBN(config):
 
 def init_model(config: Union[str, Path, Config],
                checkpoint: Optional[str] = None,
-               device: str = 'cuda:0',
+               device: str = 'musa:0',
                palette: str = 'none',
                cfg_options: Optional[dict] = None):
     """Initialize a model from config file, which could be a 3D detector or a
@@ -104,7 +104,7 @@ def init_model(config: Union[str, Path, Config],
 
     model.cfg = config  # save the config in the model for convenience
     if device != 'cpu':
-        torch.cuda.set_device(device)
+        torch.musa.set_device(device)
     else:
         warnings.warn('Don\'t suggest using CPU device. '
                       'Some functions are not supported for now.')

@@ -3,6 +3,8 @@ import argparse
 import logging
 import os
 import os.path as osp
+import torch
+import torch_musa
 
 from mmengine.config import Config, DictAction
 from mmengine.logging import print_log

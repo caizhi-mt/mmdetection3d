@@ -5,7 +5,7 @@ import torch
 from torch import nn
 
 from .utils import (PositionEmbeddingLearned, get_continous_inds,
-                    get_inner_win_inds_cuda, get_pooling_index,
+                    get_inner_win_inds_musa, get_pooling_index,
                     get_window_coors)
 
 
@@ -298,7 +298,7 @@ class DSVTInputLayer(nn.Module):
 
         # this function will return unordered inner window indices of
         # each voxel
-        inner_voxel_inds = get_inner_win_inds_cuda(contiguous_win_inds)
+        inner_voxel_inds = get_inner_win_inds_musa(contiguous_win_inds)
         global_voxel_inds = contiguous_win_inds * max_voxel + inner_voxel_inds
         _, order1 = torch.sort(global_voxel_inds)
 

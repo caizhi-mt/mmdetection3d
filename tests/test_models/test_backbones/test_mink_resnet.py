@@ -7,8 +7,8 @@ from mmdet3d.registry import MODELS
 
 
 def test_mink_resnet():
-    if not torch.cuda.is_available():
-        pytest.skip('test requires GPU and torch+cuda')
+    if not torch.musa.is_available():
+        pytest.skip('test requires GPU and torch+musa')
 
     try:
         import MinkowskiEngine as ME
@@ -20,9 +20,9 @@ def test_mink_resnet():
     # batch of 2 point clouds
     for i in range(2):
         c = torch.from_numpy(np.random.rand(500, 3) * 100)
-        coordinates.append(c.float().cuda())
+        coordinates.append(c.float().musa())
         f = torch.from_numpy(np.random.rand(500, 3))
-        features.append(f.float().cuda())
+        features.append(f.float().musa())
     tensor_coordinates, tensor_features = ME.utils.sparse_collate(
         coordinates, features)
     x = ME.SparseTensor(
@@ -30,7 +30,7 @@ def test_mink_resnet():
 
     # MinkResNet34 with 4 outputs
     cfg = dict(type='MinkResNet', depth=34, in_channels=3)
-    self = MODELS.build(cfg).cuda()
+    self = MODELS.build(cfg).musa()
     self.init_weights()
 
     y = self(x)
@@ -47,7 +47,7 @@ def test_mink_resnet():
     # MinkResNet50 with 2 outputs
     cfg = dict(
         type='MinkResNet', depth=34, in_channels=3, num_stages=2, pool=False)
-    self = MODELS.build(cfg).cuda()
+    self = MODELS.build(cfg).musa()
     self.init_weights()
 
     y = self(x)

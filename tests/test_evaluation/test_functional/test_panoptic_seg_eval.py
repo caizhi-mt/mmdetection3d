@@ -7,7 +7,7 @@ from mmdet3d.evaluation.functional.panoptic_seg_eval import panoptic_seg_eval
 
 
 def test_panoptic_seg_eval():
-    if not torch.cuda.is_available():
+    if not torch.musa.is_available():
         pytest.skip()
 
     classes = ['unlabeled', 'person', 'dog', 'grass', 'sky']

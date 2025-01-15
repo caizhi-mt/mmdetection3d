@@ -5,11 +5,11 @@ import torch
 
 
 def test_pointnet_fp_module():
-    if not torch.cuda.is_available():
+    if not torch.musa.is_available():
         pytest.skip()
     from mmdet3d.models.layers import PointFPModule
 
-    self = PointFPModule(mlp_channels=[24, 16]).cuda()
+    self = PointFPModule(mlp_channels=[24, 16]).musa()
     assert self.mlps.layer0.conv.in_channels == 24
     assert self.mlps.layer0.conv.out_channels == 16
 
@@ -17,14 +17,14 @@ def test_pointnet_fp_module():
                       np.float32).reshape((-1, 6))
 
     # (B, N, 3)
-    xyz1 = torch.from_numpy(xyz[0::2, :3]).view(1, -1, 3).cuda()
+    xyz1 = torch.from_numpy(xyz[0::2, :3]).view(1, -1, 3).musa()
     # (B, C1, N)
-    features1 = xyz1.repeat([1, 1, 4]).transpose(1, 2).contiguous().cuda()
+    features1 = xyz1.repeat([1, 1, 4]).transpose(1, 2).contiguous().musa()
 
     # (B, M, 3)
-    xyz2 = torch.from_numpy(xyz[1::3, :3]).view(1, -1, 3).cuda()
+    xyz2 = torch.from_numpy(xyz[1::3, :3]).view(1, -1, 3).musa()
     # (B, C2, N)
-    features2 = xyz2.repeat([1, 1, 4]).transpose(1, 2).contiguous().cuda()
+    features2 = xyz2.repeat([1, 1, 4]).transpose(1, 2).contiguous().musa()
 
     fp_features = self(xyz1, xyz2, features1, features2)
     assert fp_features.shape == torch.Size([1, 16, 50])

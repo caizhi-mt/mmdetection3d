@@ -2,14 +2,14 @@ import torch
 from torch.autograd import Function
 
 try:
-    from . import ingroup_inds_cuda
+    from . import ingroup_inds_musa
 
     # import ingroup_indices
 except ImportError:
     ingroup_indices = None
     print('Can not import ingroup indices')
 
-ingroup_indices = ingroup_inds_cuda
+ingroup_indices = ingroup_inds_musa
 
 
 class IngroupIndicesFunction(Function):

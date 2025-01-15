@@ -66,8 +66,8 @@ def main():
     init_default_scope(cfg.get('default_scope', 'mmdet3d'))
 
     model = MODELS.build(cfg.model)
-    if torch.cuda.is_available():
-        model.cuda()
+    if torch.musa.is_available():
+        model.musa()
     model.eval()
 
     flops, params = get_model_complexity_info(model, input_shape)

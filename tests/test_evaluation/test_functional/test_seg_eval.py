@@ -7,7 +7,7 @@ from mmdet3d.evaluation.functional.seg_eval import seg_eval
 
 
 def test_indoor_eval():
-    if not torch.cuda.is_available():
+    if not torch.musa.is_available():
         pytest.skip()
     seg_preds = [
         np.array([

@@ -12,7 +12,7 @@ class TestPAConvHead(TestCase):
     def test_paconv_head_loss(self):
         """Tests PAConv head loss."""
 
-        if torch.cuda.is_available():
+        if torch.musa.is_available():
             paconv_head = PAConvHead(
                 fp_channels=((768, 256, 256), (384, 256, 256), (320, 256, 128),
                              (128 + 6, 128, 128, 128)),
@@ -29,21 +29,21 @@ class TestPAConvHead(TestCase):
                     loss_weight=1.0),
                 ignore_index=20)
 
-            paconv_head.cuda()
+            paconv_head.musa()
             # PAConv head expects dict format features
             sa_xyz = [
-                torch.rand(1, 4096, 3).float().cuda(),
-                torch.rand(1, 1024, 3).float().cuda(),
-                torch.rand(1, 256, 3).float().cuda(),
-                torch.rand(1, 64, 3).float().cuda(),
-                torch.rand(1, 16, 3).float().cuda(),
+                torch.rand(1, 4096, 3).float().musa(),
+                torch.rand(1, 1024, 3).float().musa(),
+                torch.rand(1, 256, 3).float().musa(),
+                torch.rand(1, 64, 3).float().musa(),
+                torch.rand(1, 16, 3).float().musa(),
             ]
             sa_features = [
-                torch.rand(1, 6, 4096).float().cuda(),
-                torch.rand(1, 64, 1024).float().cuda(),
-                torch.rand(1, 128, 256).float().cuda(),
-                torch.rand(1, 256, 64).float().cuda(),
-                torch.rand(1, 512, 16).float().cuda(),
+                torch.rand(1, 6, 4096).float().musa(),
+                torch.rand(1, 64, 1024).float().musa(),
+                torch.rand(1, 128, 256).float().musa(),
+                torch.rand(1, 256, 64).float().musa(),
+                torch.rand(1, 512, 16).float().musa(),
             ]
             feat_dict = dict(sa_xyz=sa_xyz, sa_features=sa_features)
 
@@ -54,7 +54,7 @@ class TestPAConvHead(TestCase):
 
             # When truth is non-empty then losses
             # should be nonzero for random inputs
-            pts_semantic_mask = torch.randint(0, 20, (4096, )).long().cuda()
+            pts_semantic_mask = torch.randint(0, 20, (4096, )).long().musa()
             gt_pts_seg = PointData(pts_semantic_mask=pts_semantic_mask)
 
             datasample = Det3DDataSample()

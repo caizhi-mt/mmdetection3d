@@ -6,8 +6,8 @@ from mmdet3d.registry import MODELS
 
 
 def test_pillar_feature_net():
-    if not torch.cuda.is_available():
-        pytest.skip('test requires GPU and torch+cuda')
+    if not torch.musa.is_available():
+        pytest.skip('test requires GPU and torch+musa')
     pillar_feature_net_cfg = dict(
         type='PillarFeatureNet',
         in_channels=5,

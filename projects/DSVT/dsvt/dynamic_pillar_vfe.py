@@ -86,9 +86,9 @@ class DynamicPillarVFE3D(nn.Module):
         self.scale_yz = grid_size[1] * grid_size[2]
         self.scale_z = grid_size[2]
 
-        self.grid_size = torch.tensor(grid_size).cuda()
-        self.voxel_size = torch.tensor(voxel_size).cuda()
-        self.point_cloud_range = torch.tensor(point_cloud_range).cuda()
+        self.grid_size = torch.tensor(grid_size).musa()
+        self.voxel_size = torch.tensor(voxel_size).musa()
+        self.point_cloud_range = torch.tensor(point_cloud_range).musa()
 
     def get_output_feature_dim(self):
         return self.num_filters[-1]

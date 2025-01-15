@@ -5,7 +5,7 @@ import torch
 
 
 def test_dgcnn_gf_module():
-    if not torch.cuda.is_available():
+    if not torch.musa.is_available():
         pytest.skip()
     from mmdet3d.models.layers import DGCNNGFModule
 
@@ -16,7 +16,7 @@ def test_dgcnn_gf_module():
         radius=None,
         norm_cfg=dict(type='BN2d'),
         act_cfg=dict(type='ReLU'),
-        pool_mode='max').cuda()
+        pool_mode='max').musa()
 
     assert self.mlps[0].layer0.conv.in_channels == 18
     assert self.mlps[0].layer0.conv.out_channels == 64
@@ -24,7 +24,7 @@ def test_dgcnn_gf_module():
     xyz = np.fromfile('tests/data/sunrgbd/points/000001.bin', np.float32)
 
     # (B, N, C)
-    xyz = torch.from_numpy(xyz).view(1, -1, 3).cuda()
+    xyz = torch.from_numpy(xyz).view(1, -1, 3).musa()
     points = xyz.repeat([1, 1, 3])
 
     # test forward
@@ -40,7 +40,7 @@ def test_dgcnn_gf_module():
         radius=None,
         norm_cfg=dict(type='BN2d'),
         act_cfg=dict(type='ReLU'),
-        pool_mode='max').cuda()
+        pool_mode='max').musa()
 
     # test forward
     new_points = self(xyz)
@@ -54,4 +54,4 @@ def test_dgcnn_gf_module():
         radius=0.2,
         norm_cfg=dict(type='BN2d'),
         act_cfg=dict(type='ReLU'),
-        pool_mode='max').cuda()
+        pool_mode='max').musa()

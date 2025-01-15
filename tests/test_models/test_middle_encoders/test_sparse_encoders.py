@@ -6,8 +6,8 @@ from mmdet3d.registry import MODELS
 
 
 def test_sparse_encoder():
-    if not torch.cuda.is_available():
-        pytest.skip('test requires GPU and torch+cuda')
+    if not torch.musa.is_available():
+        pytest.skip('test requires GPU and torch+musa')
     sparse_encoder_cfg = dict(
         type='SparseEncoder',
         in_channels=5,
@@ -19,17 +19,17 @@ def test_sparse_encoder():
                                                                        1)),
         block_type='basicblock')
 
-    sparse_encoder = MODELS.build(sparse_encoder_cfg).cuda()
-    voxel_features = torch.rand([207842, 5]).cuda()
-    coors = torch.randint(0, 4, [207842, 4]).cuda()
+    sparse_encoder = MODELS.build(sparse_encoder_cfg).musa()
+    voxel_features = torch.rand([207842, 5]).musa()
+    coors = torch.randint(0, 4, [207842, 4]).musa()
 
     ret = sparse_encoder(voxel_features, coors, 4)
     assert ret.shape == torch.Size([4, 256, 128, 128])
 
 
 def test_sparse_encoder_for_ssd():
-    if not torch.cuda.is_available():
-        pytest.skip('test requires GPU and torch+cuda')
+    if not torch.musa.is_available():
+        pytest.skip('test requires GPU and torch+musa')
     sparse_encoder_for_ssd_cfg = dict(
         type='SparseEncoderSASSD',
         in_channels=5,
@@ -41,9 +41,9 @@ def test_sparse_encoder_for_ssd():
                                                                        1)),
         block_type='basicblock')
 
-    sparse_encoder = MODELS.build(sparse_encoder_for_ssd_cfg).cuda()
-    voxel_features = torch.rand([207842, 5]).cuda()
-    coors = torch.randint(0, 4, [207842, 4]).cuda()
+    sparse_encoder = MODELS.build(sparse_encoder_for_ssd_cfg).musa()
+    voxel_features = torch.rand([207842, 5]).musa()
+    coors = torch.randint(0, 4, [207842, 4]).musa()
 
     ret, _ = sparse_encoder(voxel_features, coors, 4, True)
     assert ret.shape == torch.Size([4, 256, 128, 128])

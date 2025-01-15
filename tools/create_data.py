@@ -1,7 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 from os import path as osp
-
+import torch
+import torch_musa
 from mmengine import print_log
 
 from tools.dataset_converters import indoor_converter as indoor

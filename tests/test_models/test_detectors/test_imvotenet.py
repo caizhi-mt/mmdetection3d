@@ -23,8 +23,8 @@ class TestImvoteNet(unittest.TestCase):
         packed_inputs = create_detector_inputs(
             with_points=False, with_img=True, img_size=128)
 
-        if torch.cuda.is_available():
-            model = model.cuda()
+        if torch.musa.is_available():
+            model = model.musa()
             # test simple_test
             with torch.no_grad():
                 data = model.data_preprocessor(packed_inputs, True)
@@ -36,7 +36,7 @@ class TestImvoteNet(unittest.TestCase):
 
             # save the memory
             with torch.no_grad():
-                torch.cuda.empty_cache()
+                torch.musa.empty_cache()
                 losses = model.forward(**data, mode='loss')
 
             self.assertGreater(sum(losses['loss_rpn_cls']), 0)
@@ -60,8 +60,8 @@ class TestImvoteNet(unittest.TestCase):
             img_size=128,
             bboxes_3d_type='depth')
 
-        if torch.cuda.is_available():
-            model = model.cuda()
+        if torch.musa.is_available():
+            model = model.musa()
             # test simple_test
             with torch.no_grad():
                 data = model.data_preprocessor(packed_inputs, True)

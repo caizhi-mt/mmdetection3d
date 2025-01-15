@@ -8,7 +8,7 @@ import torch.nn.functional as F
 
 class Projector():
 
-    def __init__(self, device='cuda'):
+    def __init__(self, device='musa'):
         self.device = device
 
     def inbound(self, pixel_locations, h, w):

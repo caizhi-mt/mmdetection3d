@@ -9,8 +9,8 @@ from .minkowski_engine_block import (MinkowskiBasicBlock, MinkowskiBottleneck,
                                      MinkowskiConvModule)
 from .mlp import MLP
 from .norm import NaiveSyncBatchNorm1d, NaiveSyncBatchNorm2d
-from .paconv import PAConv, PAConvCUDA
-from .pointnet_modules import (PAConvCUDASAModule, PAConvCUDASAModuleMSG,
+from .paconv import PAConv, PAConvMUSA
+from .pointnet_modules import (PAConvMUSASAModule, PAConvMUSASAModuleMSG,
                                PAConvSAModule, PAConvSAModuleMSG,
                                PointFPModule, PointSAModule, PointSAModuleMSG,
                                build_sa_module)
@@ -24,13 +24,13 @@ from .vote_module import VoteModule
 __all__ = [
     'VoteModule', 'GroupFree3DMHA', 'EdgeFusionModule', 'DGCNNFAModule',
     'DGCNNFPModule', 'DGCNNGFModule', 'NaiveSyncBatchNorm1d',
-    'NaiveSyncBatchNorm2d', 'PAConv', 'PAConvCUDA', 'SparseBasicBlock',
+    'NaiveSyncBatchNorm2d', 'PAConv', 'PAConvMUSA', 'SparseBasicBlock',
     'SparseBottleneck', 'make_sparse_convmodule', 'PointFusion', 'VoteFusion',
     'apply_3d_transformation', 'bbox_2d_transform', 'coord_2d_transform',
     'MLP', 'box3d_multiclass_nms', 'aligned_3d_nms', 'circle_nms', 'nms_bev',
     'nms_normal_bev', 'build_sa_module', 'PointSAModuleMSG', 'PointSAModule',
     'PointFPModule', 'PAConvSAModule', 'PAConvSAModuleMSG',
-    'PAConvCUDASAModule', 'PAConvCUDASAModuleMSG', 'TorchSparseConvModule',
+    'PAConvMUSASAModule', 'PAConvMUSASAModuleMSG', 'TorchSparseConvModule',
     'TorchSparseBasicBlock', 'TorchSparseBottleneck', 'MinkowskiConvModule',
     'MinkowskiBasicBlock', 'MinkowskiBottleneck'
 ]

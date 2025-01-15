@@ -445,15 +445,15 @@ class BaseInstance3DBoxes:
         return original_type(
             self.tensor.cpu(), box_dim=self.box_dim, with_yaw=self.with_yaw)
 
-    def cuda(self, *args, **kwargs) -> 'BaseInstance3DBoxes':
-        """Convert current boxes to cuda device.
+    def musa(self, *args, **kwargs) -> 'BaseInstance3DBoxes':
+        """Convert current boxes to musa device.
 
         Returns:
-            :obj:`BaseInstance3DBoxes`: A new boxes object on the cuda device.
+            :obj:`BaseInstance3DBoxes`: A new boxes object on the musa device.
         """
         original_type = type(self)
         return original_type(
-            self.tensor.cuda(*args, **kwargs),
+            self.tensor.musa(*args, **kwargs),
             box_dim=self.box_dim,
             with_yaw=self.with_yaw)
 

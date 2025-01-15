@@ -277,7 +277,7 @@ custom_hooks = [
 env_cfg = dict(
     cudnn_benchmark=False,
     mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0),
-    dist_cfg=dict(backend='nccl'),
+    dist_cfg=dict(backend='mccl'),
 )
 
 vis_backends = [dict(type='LocalVisBackend')]

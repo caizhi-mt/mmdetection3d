@@ -7,7 +7,7 @@ from mmdet3d.registry import MODELS
 
 
 def test_pointnet2_sa_msg():
-    if not torch.cuda.is_available():
+    if not torch.musa.is_available():
         pytest.skip()
 
     # PN2MSG used in 3DSSD
@@ -31,14 +31,14 @@ def test_pointnet2_sa_msg():
             normalize_xyz=False))
 
     self = MODELS.build(cfg)
-    self.cuda()
+    self.musa()
     assert self.SA_modules[0].mlps[0].layer0.conv.in_channels == 4
     assert self.SA_modules[0].mlps[0].layer0.conv.out_channels == 8
     assert self.SA_modules[0].mlps[1].layer1.conv.out_channels == 8
     assert self.SA_modules[2].mlps[2].layer2.conv.out_channels == 64
 
     xyz = np.fromfile('tests/data/sunrgbd/points/000001.bin', dtype=np.float32)
-    xyz = torch.from_numpy(xyz).view(1, -1, 6).cuda()  # (B, N, 6)
+    xyz = torch.from_numpy(xyz).view(1, -1, 6).musa()  # (B, N, 6)
     # test forward
     ret_dict = self(xyz[:, :, :4])
     sa_xyz = ret_dict['sa_xyz'][-1]
@@ -96,7 +96,7 @@ def test_pointnet2_sa_msg():
             normalize_xyz=False))
 
     self = MODELS.build(cfg)
-    self.cuda()
+    self.musa()
     ret_dict = self(xyz)
     sa_xyz = ret_dict['sa_xyz']
     sa_features = ret_dict['sa_features']

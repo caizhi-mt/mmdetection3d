@@ -5,7 +5,7 @@ import torch
 
 
 def test_pointnet_sa_module_msg():
-    if not torch.cuda.is_available():
+    if not torch.musa.is_available():
         pytest.skip()
     from mmdet3d.models.layers import PointSAModuleMSG
 
@@ -16,7 +16,7 @@ def test_pointnet_sa_module_msg():
         mlp_channels=[[12, 16], [12, 32]],
         norm_cfg=dict(type='BN2d'),
         use_xyz=False,
-        pool_mod='max').cuda()
+        pool_mod='max').musa()
 
     assert self.mlps[0].layer0.conv.in_channels == 12
     assert self.mlps[0].layer0.conv.out_channels == 16
@@ -26,9 +26,9 @@ def test_pointnet_sa_module_msg():
     xyz = np.fromfile('tests/data/sunrgbd/points/000001.bin', np.float32)
 
     # (B, N, 3)
-    xyz = torch.from_numpy(xyz).view(1, -1, 3).cuda()
+    xyz = torch.from_numpy(xyz).view(1, -1, 3).musa()
     # (B, C, N)
-    features = xyz.repeat([1, 1, 4]).transpose(1, 2).contiguous().cuda()
+    features = xyz.repeat([1, 1, 4]).transpose(1, 2).contiguous().musa()
 
     # test forward
     new_xyz, new_features, inds = self(xyz, features)
@@ -46,7 +46,7 @@ def test_pointnet_sa_module_msg():
         use_xyz=False,
         pool_mod='max',
         fps_mod=['D-FPS'],
-        fps_sample_range_list=[-1]).cuda()
+        fps_sample_range_list=[-1]).musa()
 
     # test forward
     new_xyz, new_features, inds = self(xyz, features)
@@ -64,7 +64,7 @@ def test_pointnet_sa_module_msg():
         use_xyz=False,
         pool_mod='max',
         fps_mod=['F-FPS'],
-        fps_sample_range_list=[-1]).cuda()
+        fps_sample_range_list=[-1]).musa()
 
     # test forward
     new_xyz, new_features, inds = self(xyz, features)
@@ -82,7 +82,7 @@ def test_pointnet_sa_module_msg():
         use_xyz=False,
         pool_mod='max',
         fps_mod=['FS'],
-        fps_sample_range_list=[-1]).cuda()
+        fps_sample_range_list=[-1]).musa()
 
     # test forward
     new_xyz, new_features, inds = self(xyz, features)
@@ -100,7 +100,7 @@ def test_pointnet_sa_module_msg():
         use_xyz=False,
         pool_mod='max',
         fps_mod=['F-FPS', 'D-FPS'],
-        fps_sample_range_list=[64, -1]).cuda()
+        fps_sample_range_list=[64, -1]).musa()
 
     # test forward
     new_xyz, new_features, inds = self(xyz, features)
@@ -116,7 +116,7 @@ def test_pointnet_sa_module_msg():
         mlp_channels=[[12, 16], [12, 32]],
         norm_cfg=dict(type='BN2d'),
         use_xyz=False,
-        pool_mod='max').cuda()
+        pool_mod='max').musa()
 
     # test forward
     new_xyz, new_features, inds = self(xyz, features)
@@ -133,7 +133,7 @@ def test_pointnet_sa_module_msg():
             use_xyz=False,
             pool_mod='max',
             fps_mod=['F-FPS', 'D-FPS'],
-            fps_sample_range_list=[-1]).cuda()
+            fps_sample_range_list=[-1]).musa()
 
     # length of 'num_point' should be same as 'fps_sample_range_list'
     with pytest.raises(AssertionError):
@@ -146,11 +146,11 @@ def test_pointnet_sa_module_msg():
             use_xyz=False,
             pool_mod='max',
             fps_mod=['F-FPS'],
-            fps_sample_range_list=[-1]).cuda()
+            fps_sample_range_list=[-1]).musa()
 
 
 def test_pointnet_sa_module():
-    if not torch.cuda.is_available():
+    if not torch.musa.is_available():
         pytest.skip()
     from mmdet3d.models.layers import build_sa_module
     sa_cfg = dict(
@@ -162,7 +162,7 @@ def test_pointnet_sa_module():
         norm_cfg=dict(type='BN2d'),
         use_xyz=True,
         pool_mod='max')
-    self = build_sa_module(sa_cfg).cuda()
+    self = build_sa_module(sa_cfg).musa()
 
     assert self.mlps[0].layer0.conv.in_channels == 15
     assert self.mlps[0].layer0.conv.out_channels == 32
@@ -170,9 +170,9 @@ def test_pointnet_sa_module():
     xyz = np.fromfile('tests/data/sunrgbd/points/000001.bin', np.float32)
 
     # (B, N, 3)
-    xyz = torch.from_numpy(xyz[..., :3]).view(1, -1, 3).cuda()
+    xyz = torch.from_numpy(xyz[..., :3]).view(1, -1, 3).musa()
     # (B, C, N)
-    features = xyz.repeat([1, 1, 4]).transpose(1, 2).contiguous().cuda()
+    features = xyz.repeat([1, 1, 4]).transpose(1, 2).contiguous().musa()
 
     # test forward
     new_xyz, new_features, inds = self(xyz, features)
@@ -196,12 +196,12 @@ def test_pointnet_sa_module():
 
     # test kNN sampling when radius is None
     sa_cfg['normalize_xyz'] = False
-    self = build_sa_module(sa_cfg).cuda()
+    self = build_sa_module(sa_cfg).musa()
 
     xyz = np.fromfile('tests/data/sunrgbd/points/000001.bin', np.float32)
 
-    xyz = torch.from_numpy(xyz[..., :3]).view(1, -1, 3).cuda()
-    features = xyz.repeat([1, 1, 4]).transpose(1, 2).contiguous().cuda()
+    xyz = torch.from_numpy(xyz[..., :3]).view(1, -1, 3).musa()
+    features = xyz.repeat([1, 1, 4]).transpose(1, 2).contiguous().musa()
     new_xyz, new_features, inds = self(xyz, features)
     assert new_xyz.shape == torch.Size([1, 16, 3])
     assert new_features.shape == torch.Size([1, 32, 16])

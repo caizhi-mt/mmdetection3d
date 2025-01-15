@@ -7,7 +7,7 @@ from mmdet3d.registry import MODELS
 
 
 def test_dgcnn_gf():
-    if not torch.cuda.is_available():
+    if not torch.musa.is_available():
         pytest.skip()
 
     # DGCNNGF used in segmentation
@@ -22,10 +22,10 @@ def test_dgcnn_gf():
         act_cfg=dict(type='ReLU'))
 
     self = MODELS.build(cfg)
-    self.cuda()
+    self.musa()
 
     xyz = np.fromfile('tests/data/sunrgbd/points/000001.bin', dtype=np.float32)
-    xyz = torch.from_numpy(xyz).view(1, -1, 6).cuda()  # (B, N, 6)
+    xyz = torch.from_numpy(xyz).view(1, -1, 6).musa()  # (B, N, 6)
     # test forward
     ret_dict = self(xyz)
     gf_points = ret_dict['gf_points']

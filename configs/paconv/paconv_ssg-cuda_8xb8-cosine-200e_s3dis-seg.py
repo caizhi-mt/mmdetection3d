@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/datasets/s3dis-seg.py', '../_base_/models/paconv_ssg-cuda.py',
+    '../_base_/datasets/s3dis-seg.py', '../_base_/models/paconv_ssg-musa.py',
     '../_base_/schedules/seg-cosine-150e.py', '../_base_/default_runtime.py'
 ]
 

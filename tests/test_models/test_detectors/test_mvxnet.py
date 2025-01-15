@@ -25,14 +25,14 @@ class TestMVXNet(unittest.TestCase):
         packed_inputs = create_detector_inputs(
             with_img=False, num_gt_instance=num_gt_instance, points_feat_dim=4)
 
-        if torch.cuda.is_available():
+        if torch.musa.is_available():
 
-            model = model.cuda()
+            model = model.musa()
             # test simple_test
             data = model.data_preprocessor(packed_inputs, True)
             # save the memory when do the unitest
             with torch.no_grad():
-                torch.cuda.empty_cache()
+                torch.musa.empty_cache()
                 losses = model.forward(**data, mode='loss')
             assert losses['loss_cls'][0] >= 0
             assert losses['loss_bbox'][0] >= 0

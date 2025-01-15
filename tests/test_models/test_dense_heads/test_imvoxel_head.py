@@ -13,8 +13,8 @@ class TestImVoxelHead(TestCase):
 
     def test_imvoxel_head_loss(self):
         """Test imvoxel head loss when truth is empty and non-empty."""
-        if not torch.cuda.is_available():
-            pytest.skip('test requires GPU and torch+cuda')
+        if not torch.musa.is_available():
+            pytest.skip('test requires GPU and torch+musa')
 
         # build head
         prior_generator = dict(
@@ -33,13 +33,13 @@ class TestImVoxelHead(TestCase):
             bbox_loss=dict(type='RotatedIoU3DLoss'),
             cls_loss=dict(type='mmdet.FocalLoss'),
         )
-        imvoxel_head = imvoxel_head.cuda()
+        imvoxel_head = imvoxel_head.musa()
 
         # fake input of head
         # (x, valid_preds)
         x = [
-            torch.randn(1, 32, 10, 10, 4).cuda(),
-            torch.ones(1, 1, 10, 10, 4).cuda()
+            torch.randn(1, 32, 10, 10, 4).musa(),
+            torch.ones(1, 1, 10, 10, 4).musa()
         ]
 
         # fake annotation
@@ -52,7 +52,7 @@ class TestImVoxelHead(TestCase):
             with_pts_semantic_mask=False,
             with_pts_instance_mask=False)
         data_samples = [
-            sample.cuda() for sample in packed_inputs['data_samples']
+            sample.musa() for sample in packed_inputs['data_samples']
         ]
 
         losses = imvoxel_head.loss(x, data_samples)

@@ -449,15 +449,15 @@ class BasePoints:
             points_dim=self.points_dim,
             attribute_dims=self.attribute_dims)
 
-    def cuda(self, *args, **kwargs) -> 'BasePoints':
-        """Convert current points to cuda device.
+    def musa(self, *args, **kwargs) -> 'BasePoints':
+        """Convert current points to musa device.
 
         Returns:
-            :obj:`BasePoints`: A new points object on the cuda device.
+            :obj:`BasePoints`: A new points object on the musa device.
         """
         original_type = type(self)
         return original_type(
-            self.tensor.cuda(*args, **kwargs),
+            self.tensor.musa(*args, **kwargs),
             points_dim=self.points_dim,
             attribute_dims=self.attribute_dims)
 
