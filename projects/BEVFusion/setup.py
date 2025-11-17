@@ -8,7 +8,7 @@ if os.getenv('FORCE_MUSA', '0') == '1':
 else:
     from torch.utils.cpp_extension import BuildExtension
     from torch.utils.cpp_extension import CppExtension, CUDAExtension
-
+from pkg_resources import DistributionNotFound, get_distribution, parse_version
 
 def make_cuda_ext(name,
                   module,
@@ -33,7 +33,7 @@ def make_cuda_ext(name,
             '-gencode=arch=compute_86,code=sm_86',
         ]
         sources += sources_cuda
-    elif os.getenv('FORCE_MUSA', '0') == '1':
+    elif hasattr(torch, 'musa') or os.getenv('FORCE_MUSA', '0') == '1':
         print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         from torch_musa.utils.musa_extension import MUSAExtension
         sources += sources_cuda
@@ -53,6 +53,12 @@ def make_cuda_ext(name,
                             ('MUSA_ARCH', str(get_musa_arch()))]
         os.environ['MUSA_ARCH'] = str(get_musa_arch())
         extension = MUSAExtension
+        
+        if parse_version(torch_musa.__version__.split("+")[0]) > parse_version('2.0.0'):
+            define_macros += [('USE_NEW_MUSA', '1')]
+        else:
+            define_macros += [('USE_NEW_MUSA', '0')]
+        
     else:
         print('Compiling {} without CUDA'.format(name))
         extension = CppExtension
